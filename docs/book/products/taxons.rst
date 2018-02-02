@@ -64,7 +64,7 @@ Finally **the parent taxon** has to be added to the system using a repository, a
 
 .. code-block:: php
 
-     /** @var TaxonRepositoryInterface $taxonsRepository */
+     /** @var TaxonRepositoryInterface $taxonRepository */
      $taxonRepository = $this->get('sylius.repository.taxon');
 
      $taxonRepository->add($taxon);
@@ -115,5 +115,5 @@ To have it on your product you need to use the ``setMainTaxon()`` method.
 Learn more
 ----------
 
-* :doc:`Taxonomy - Bundle Documentation </bundles/SyliusTaxonomyBundle/index>`
-* :doc:`taxonomy - Component Documentation </components/Taxonomy/index>`
+* :doc:`Taxonomy - Bundle Documentation </components_and_bundles/bundles/SyliusTaxonomyBundle/index>`
+* :doc:`taxonomy - Component Documentation </components_and_bundles/components/Taxonomy/index>`

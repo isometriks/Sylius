@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace Sylius\Bundle\ThemeBundle\Translation\DependencyInjection\Compiler;
 
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
@@ -16,15 +18,12 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Exception\OutOfBoundsException;
 
-/**
- * @author Kamil Kokot <kamil@kokot.me>
- */
 final class TranslatorResourceProviderPass implements CompilerPassInterface
 {
     /**
      * {@inheritdoc}
      */
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
         try {
             $symfonyTranslator = $container->findDefinition('translator.default');
@@ -46,7 +45,7 @@ final class TranslatorResourceProviderPass implements CompilerPassInterface
      *
      * @return array
      */
-    private function extractResourcesFilesFromSymfonyTranslator(Definition $symfonyTranslator)
+    private function extractResourcesFilesFromSymfonyTranslator(Definition $symfonyTranslator): array
     {
         try {
             $options = $symfonyTranslator->getArgument(3);
@@ -58,7 +57,7 @@ final class TranslatorResourceProviderPass implements CompilerPassInterface
             $options = [];
         }
 
-        $languagesFiles = isset($options['resource_files']) ? $options['resource_files'] : [];
+        $languagesFiles = $options['resource_files'] ?? [];
 
         $resourceFiles = [];
         foreach ($languagesFiles as $language => $files) {

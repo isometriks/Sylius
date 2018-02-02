@@ -61,7 +61,7 @@ As a result you will get the ``Sylius\Bundle\CustomerBundle\Form\Type\CustomerPr
         /**
          * {@inheritdoc}
          */
-        public function buildForm(FormBuilderInterface $builder, array $options)
+        public function buildForm(FormBuilderInterface $builder, array $options): void
         {
             // Adding new fields works just like in the parent form type.
             $builder->add('contactHours', TextType::class, [
@@ -81,7 +81,7 @@ As a result you will get the ``Sylius\Bundle\CustomerBundle\Form\Type\CustomerPr
         /**
          * {@inheritdoc}
          */
-        public function getExtendedType()
+        public function getExtendedType(): string
         {
             return CustomerProfileType::class;
         }
@@ -121,7 +121,7 @@ Need more information?
 
 .. warning::
 
-    Some of the forms already have extensions in Sylius. Learn more about Extensions `here <http://symfony.com/doc/current/bundles/extension.html>`_.
+    Some of the forms already have extensions in Sylius. Learn more about Extensions `here <http://symfony.com/doc/current/form/create_form_type_extension.html>`_.
 
 For instance the ``ProductVariant`` admin form is defined under ``Sylius/Bundle/ProductBundle/Form/Type/ProductVariantType.php`` and later extended in
 ``Sylius/Bundle/CoreBundle/Form/Extension/ProductVariantTypeExtension.php``. If you again extend the base type form like this:
@@ -150,7 +150,7 @@ as is done in the ``ProductVariantTypeExtension`` by the ``CoreBundle``:
         /**
          * {@inheritdoc}
          */
-        public function buildForm(FormBuilderInterface $builder, array $options)
+        public function buildForm(FormBuilderInterface $builder, array $options): void
         {
             ...
 
@@ -183,11 +183,11 @@ you will also have to set up an event listener and then remove the field:
 
     ...
 
-    final class ProductVariantTypeMyExtension extneds AbstractTypeExtension
+    final class ProductVariantTypeMyExtension extends AbstractTypeExtension
     {
         ...
 
-        public function buildForm(FormBuilderInterface $builder, array $options)
+        public function buildForm(FormBuilderInterface $builder, array $options): void
         {
             ...
 
@@ -203,6 +203,50 @@ you will also have to set up an event listener and then remove the field:
         }
     }
 
+Adding constraints inside a form extension
+------------------------------------------
+
+.. warning::
+
+    When adding your constraints dynamically from inside a form extension, be aware to add the correct validation groups.
+
+Although it is advised to follow the :doc:`Validation Customization Guide </customization/validation>`, it might happen that you
+want to define the form constraints from inside the form extension. They will not be used unless the correct validation group(s)
+has been added. The example below shows how to add the default `sylius` group to a constraint.
+
+.. code-block:: php
+
+    <?php
+
+    ...
+
+    final class CustomerProfileTypeExtension extends AbstractTypeExtension
+    {
+        ...
+
+        public function buildForm(FormBuilderInterface $builder, array $options): void
+        {
+            ...
+
+            // Adding new fields works just like in the parent form type.
+            $builder->add('contactHours', TextType::class, [
+                'required' => false,
+                'label' => 'app.form.customer.contact_hours',
+                'constraints' => [
+                    new Range([
+                        'min' => 8,
+                        'max' => 17,
+                        'groups' => ['sylius'],
+                    ]),
+                ],
+            ]);
+
+            ...
+        }
+
+        ...
+    }
+
 Overriding forms completely
 ---------------------------
 
@@ -210,3 +254,5 @@ Overriding forms completely
 
     If you need to create a new form type on top of an existing one -  create this new alternative form type and define `getParent()`
     to the old one. `See details in the Symfony docs <http://symfony.com/doc/current/form/create_custom_field_type.html>`_.
+
+.. include:: /customization/plugins.rst.inc

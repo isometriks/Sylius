@@ -9,21 +9,19 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace Sylius\Behat\Context\Setup;
 
 use Behat\Behat\Context\Context;
 use Doctrine\Common\Persistence\ObjectManager;
 use Sylius\Behat\Service\SharedStorageInterface;
 use Sylius\Component\Addressing\Model\CountryInterface;
-use Sylius\Component\Core\Model\Address;
 use Sylius\Component\Core\Model\CustomerInterface;
 use Sylius\Component\Core\Repository\CustomerRepositoryInterface;
 use Sylius\Component\Customer\Model\CustomerGroupInterface;
 use Sylius\Component\Resource\Factory\FactoryInterface;
 
-/**
- * @author Anna Walasek <anna.walasek@lakion.com>
- */
 final class CustomerContext implements Context
 {
     /**
@@ -144,6 +142,7 @@ final class CustomerContext implements Context
 
     /**
      * @Given there is a customer :name identified by an email :email and a password :password
+     * @Given there is a customer :name with an email :email and a password :password
      */
     public function theStoreHasCustomerAccountWithEmailAndPassword($name, $email, $password)
     {
@@ -207,7 +206,7 @@ final class CustomerContext implements Context
      * @param string $email
      * @param string|null $firstName
      * @param string|null $lastName
-     * @param \DateTime|null $createdAt
+     * @param \DateTimeInterface|null $createdAt
      * @param string|null $phoneNumber
      *
      * @return CustomerInterface
@@ -216,7 +215,7 @@ final class CustomerContext implements Context
         $email,
         $firstName = null,
         $lastName = null,
-        \DateTime $createdAt = null,
+        \DateTimeInterface $createdAt = null,
         $phoneNumber = null
     ) {
         /** @var CustomerInterface $customer */
@@ -264,7 +263,9 @@ final class CustomerContext implements Context
         $user->setUsername($email);
         $user->setPlainPassword($password);
         $user->setEnabled($enabled);
-        $user->addRole($role);
+        if (null !== $role) {
+            $user->addRole($role);
+        }
 
         $customer->setUser($user);
 

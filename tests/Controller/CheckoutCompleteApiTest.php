@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace Sylius\Tests\Controller;
 
 use Doctrine\ORM\EntityManagerInterface;
@@ -18,9 +20,6 @@ use Sylius\Component\Product\Repository\ProductRepositoryInterface;
 use Sylius\Component\Product\Repository\ProductVariantRepositoryInterface;
 use Symfony\Component\HttpFoundation\Response;
 
-/**
- * @author Mateusz Zalewski <mateusz.zalewski@lakion.com>
- */
 final class CheckoutCompleteApiTest extends CheckoutApiTestCase
 {
     /**

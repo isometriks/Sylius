@@ -9,14 +9,14 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace Sylius\Component\Core\Customer;
 
+use Sylius\Component\Core\Model\AddressInterface;
 use Sylius\Component\Core\Model\CustomerInterface;
 use Sylius\Component\Core\Model\OrderInterface;
 
-/**
- * @author Jan Góralski <jan.goralski@lakion.com>
- */
 final class CustomerOrderAddressesSaver implements OrderAddressesSaverInterface
 {
     /**
@@ -35,7 +35,7 @@ final class CustomerOrderAddressesSaver implements OrderAddressesSaverInterface
     /**
      * @param OrderInterface $order
      */
-    public function saveAddresses(OrderInterface $order)
+    public function saveAddresses(OrderInterface $order): void
     {
         /** @var CustomerInterface $customer */
         $customer = $order->getCustomer();
@@ -43,10 +43,18 @@ final class CustomerOrderAddressesSaver implements OrderAddressesSaverInterface
             return;
         }
 
-        $shippingAddress = $order->getShippingAddress();
-        $billingAddress = $order->getBillingAddress();
+        $this->addAddress($customer, $order->getBillingAddress());
+        $this->addAddress($customer, $order->getShippingAddress());
+    }
 
-        $this->addressAdder->add($customer, clone $billingAddress);
-        $this->addressAdder->add($customer, clone $shippingAddress);
+    /**
+     * @param CustomerInterface $customer
+     * @param AddressInterface|null $address
+     */
+    private function addAddress(CustomerInterface $customer, ?AddressInterface $address): void
+    {
+        if (null !== $address) {
+            $this->addressAdder->add($customer, clone $address);
+        }
     }
 }

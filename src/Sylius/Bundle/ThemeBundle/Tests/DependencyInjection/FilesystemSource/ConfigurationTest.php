@@ -9,15 +9,15 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace Sylius\Bundle\ThemeBundle\Tests\DependencyInjection\FilesystemSource;
 
 use Matthias\SymfonyConfigTest\PhpUnit\ConfigurationTestCaseTrait;
 use Sylius\Bundle\ThemeBundle\Configuration\Filesystem\FilesystemConfigurationSourceFactory;
 use Sylius\Bundle\ThemeBundle\DependencyInjection\Configuration;
+use Symfony\Component\Config\Definition\ConfigurationInterface;
 
-/**
- * @author Kamil Kokot <kamil@kokot.me>
- */
 final class ConfigurationTest extends \PHPUnit_Framework_TestCase
 {
     use ConfigurationTestCaseTrait;
@@ -25,7 +25,7 @@ final class ConfigurationTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function it_uses_app_themes_filesystem_as_the_default_source()
+    public function it_uses_app_themes_filesystem_as_the_default_source(): void
     {
         $this->assertProcessedConfigurationEquals(
             [
@@ -35,6 +35,7 @@ final class ConfigurationTest extends \PHPUnit_Framework_TestCase
                 'directories' => ['%kernel.root_dir%/themes'],
                 'filename' => 'composer.json',
                 'enabled' => true,
+                'scan_depth' => null,
             ]]],
             'sources'
         );
@@ -43,7 +44,26 @@ final class ConfigurationTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function it_does_not_add_default_theme_directories_if_there_are_some_defined_by_user()
+    public function it_allows_an_integer_for_scan_depth(): void
+    {
+        $this->assertProcessedConfigurationEquals(
+            [
+                ['sources' => ['filesystem' => ['scan_depth' => 1]]],
+            ],
+            ['sources' => ['filesystem' => [
+                'directories' => ['%kernel.root_dir%/themes'],
+                'filename' => 'composer.json',
+                'enabled' => true,
+                'scan_depth' => 1,
+            ]]],
+            'sources'
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function it_does_not_add_default_theme_directories_if_there_are_some_defined_by_user(): void
     {
         $this->assertProcessedConfigurationEquals(
             [
@@ -53,6 +73,7 @@ final class ConfigurationTest extends \PHPUnit_Framework_TestCase
                 'directories' => ['/custom/path', '/custom/path2'],
                 'filename' => 'composer.json',
                 'enabled' => true,
+                'scan_depth' => null,
             ]]],
             'sources.filesystem'
         );
@@ -61,7 +82,7 @@ final class ConfigurationTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function it_uses_the_last_theme_directories_passed_and_rejects_the_other_ones()
+    public function it_uses_the_last_theme_directories_passed_and_rejects_the_other_ones(): void
     {
         $this->assertProcessedConfigurationEquals(
             [
@@ -72,6 +93,7 @@ final class ConfigurationTest extends \PHPUnit_Framework_TestCase
                 'directories' => ['/last/custom/path'],
                 'filename' => 'composer.json',
                 'enabled' => true,
+                'scan_depth' => null,
             ]]],
             'sources.filesystem'
         );
@@ -80,7 +102,7 @@ final class ConfigurationTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function it_is_invalid_to_pass_a_string_as_theme_directories()
+    public function it_is_invalid_to_pass_a_string_as_theme_directories(): void
     {
         $this->assertPartialConfigurationIsInvalid(
             [
@@ -93,7 +115,20 @@ final class ConfigurationTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function it_throws_an_error_if_trying_to_set_theme_directories_to_an_empty_array()
+    public function it_is_invalid_to_pass_a_string_as_scan_depth(): void
+    {
+        $this->assertPartialConfigurationIsInvalid(
+            [
+                ['sources' => ['filesystem' => ['directories' => ['/custom/path', '/custom/path2'], 'scan_depth' => 'test']]],
+            ],
+            'sources.filesystem'
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function it_throws_an_error_if_trying_to_set_theme_directories_to_an_empty_array(): void
     {
         $this->assertPartialConfigurationIsInvalid(
             [
@@ -106,7 +141,7 @@ final class ConfigurationTest extends \PHPUnit_Framework_TestCase
     /**
      * {@inheritdoc}
      */
-    protected function getConfiguration()
+    protected function getConfiguration(): ConfigurationInterface
     {
         return new Configuration([
             new FilesystemConfigurationSourceFactory(),

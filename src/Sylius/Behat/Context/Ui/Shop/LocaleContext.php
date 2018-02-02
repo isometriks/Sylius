@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace Sylius\Behat\Context\Ui\Shop;
 
 use Behat\Behat\Context\Context;
@@ -16,9 +18,6 @@ use Sylius\Behat\Page\Shop\HomePageInterface;
 use Sylius\Component\Locale\Context\LocaleNotFoundException;
 use Webmozart\Assert\Assert;
 
-/**
- * @author Kamil Kokot <kamil@kokot.me>
- */
 final class LocaleContext implements Context
 {
     /**
@@ -72,7 +71,7 @@ final class LocaleContext implements Context
         if (in_array($locale, $this->homePage->getAvailableLocales(), true)) {
             throw new \InvalidArgumentException(sprintf(
                 'Expected "%s" not to be in "%s"',
-                $localeName,
+                $locale,
                 implode('", "', $this->homePage->getAvailableLocales())
             ));
         }
@@ -85,6 +84,7 @@ final class LocaleContext implements Context
     {
         try {
             $this->homePage->tryToOpen();
+
             throw new \Exception('The page should not be able to open.');
         } catch (LocaleNotFoundException $e) {
         }

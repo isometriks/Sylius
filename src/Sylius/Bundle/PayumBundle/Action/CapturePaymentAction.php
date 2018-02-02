@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace Sylius\Bundle\PayumBundle\Action;
 
 use Payum\Core\Action\GatewayAwareAction;
@@ -40,13 +42,13 @@ final class CapturePaymentAction extends GatewayAwareAction
     /**
      * {@inheritdoc}
      *
-     * @param $request Capture
+     * @param Capture $request
      */
-    public function execute($request)
+    public function execute($request): void
     {
         RequestNotSupportedException::assertSupports($this, $request);
 
-        /** @var $payment SyliusPaymentInterface */
+        /** @var SyliusPaymentInterface $payment */
         $payment = $request->getModel();
 
         /** @var OrderInterface $order */
@@ -86,11 +88,11 @@ final class CapturePaymentAction extends GatewayAwareAction
     /**
      * {@inheritdoc}
      */
-    public function supports($request)
+    public function supports($request): bool
     {
         return
             $request instanceof Capture &&
             $request->getModel() instanceof SyliusPaymentInterface
-            ;
+        ;
     }
 }

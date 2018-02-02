@@ -10,15 +10,19 @@ sylius:
             options: Možnosti
             meta_keywords: Meta klíčová slova
             meta_description: Meta popis
+            slug: Unikátní identifikátor URL (slug)
         product_variant:
             name: Jméno
         association_type:
             name: Jméno
             translations: Překlady
+        association:
+            type: Typ asociace
         variant:
             name: Jméno
         option:
             name: Jméno
+            position: Pozice
             values: Možné hodnoty
         option_value:
             add_value: Přidání hodnoty

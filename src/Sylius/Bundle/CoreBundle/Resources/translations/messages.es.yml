@@ -162,8 +162,8 @@ sylius:
             intl: Intl
             json_encode: JSON
             mbstring: Multibyte String
-            "off": false
-            "on": true
+            off: false
+            on: true
             pcre: PCRE
             pdo: PDO
             php_xml: PHP-XML
@@ -192,8 +192,8 @@ sylius:
             detect_unicode: detect_unicode
             magic_quotes_gpc: magic_quotes_gpc
             non_deprecated: no obsoleto
-            "off": false
-            "on": true
+            off: false
+            on: true
             register_globals: register_globals
             session:
                 auto_start: session.auto_start
@@ -201,7 +201,7 @@ sylius:
             timezone: timezone
             timezone_deprecated:
                 header: Zona horaria obsoleta
-                help: 'La zona horaria %timezone% está obsoleta. Arregla tu fichero php.ini (lista de zonas horarias obsoletas http://php.net/manual/en/timezones.others.php).'
+                help: La zona horaria %timezone% está obsoleta. Arregla tu fichero php.ini (lista de zonas horarias obsoletas http://php.net/manual/en/timezones.others.php).
             version: Versión de PHP
             version_recommended: Versión de PHP recomendada
     payum_gateway:
